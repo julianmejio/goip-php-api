@@ -47,7 +47,7 @@ class Sms extends Base
         );
 
         preg_match_all('/sms\=\s(.*\]);/', $result, $lines);
-        foreach($lines[1] as $i => $dataRaw) {
+        foreach ($lines[1] as $i => $dataRaw) {
             $line = $i + 1;
             $messages[$line] = [];
 
@@ -97,20 +97,20 @@ class Sms extends Base
     public function sendSms($line, $receiver, $message)
     {
         $smskey = rand();
-        $data = array(
+        $data = [
             'line' => $line,
             'smskey' => $smskey,
             'action' => 'sms',
             'telnum' => $receiver,
             'smscontent' => $message,
             'send' => 'send'
-        );
+        ];
 
         $this->connect(self::SEND_SMS_ROUTE, [], $data);
 
         $status = $this->getSmsSendStatus($line, $smskey);
 
-        while($status['message'] == 'Sending ...') {
+        while ($status['message'] == 'Sending ...') {
             $status = $this->getSmsSendStatus($line, $smskey);
         }
         
@@ -148,9 +148,9 @@ class Sms extends Base
         $status = json_encode($status);
         $status = json_decode($status, true);
         $status = [
-            'key' => $status['smskey'.$line],
-            'status' => $status['status'.$line],
-            'error' => $status['error'.$line]
+            'key' => $status['smskey' . $line],
+            'status' => $status['status' . $line],
+            'error' => $status['error' . $line]
         ];
 
         if ($status['key'] != $key) {

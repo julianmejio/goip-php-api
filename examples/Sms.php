@@ -1,18 +1,14 @@
 <?php
-// manual autoload
-spl_autoload_register(function($class) {
-    include dirname(__DIR__).'/src/' . str_replace('GoIP\\', '', $class . '.php');
-
-});
+require_once(__DIR__ . '/../vendor/autoload.php');
 
 $goip = new \GoIP\GoipClient("192.168.0.105", "admin", "admin", 80);
 
 $sms = new \GoIP\Sms($goip);
 $messages = $sms->getMessages();
-print_r($messages);
+dump($messages);
 
-$lineMessages = $sms->getLineMessages(2);
-print_r($lineMessages);
+$lineMessages = $sms->getLineMessages(1);
+dump($lineMessages);
 
 $result = $sms->sendSms(2, '09158786696', 'Yey!');
-print_r($result);
+dump($result);

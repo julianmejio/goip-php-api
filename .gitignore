@@ -1,2 +1,9 @@
+# Ignore IDEA project definition
+/.idea
+/*.iml
 # Ignore vendor
 /vendor/
+# Ignore PHP-CS cache
+/.php_cs.cache
+# Ignore PHP-FpM related errors
+error_log
