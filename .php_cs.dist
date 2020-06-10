@@ -12,5 +12,9 @@ return PhpCsFixer\Config::create()
         'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'one'],
         'single_line_comment_style' => false,
+        'phpdoc_align' => true,
+        'phpdoc_separation' => true,
+        'no_superfluous_phpdoc_tags' => true,
+        'no_empty_phpdoc' => true,
     ])
     ->setFinder($finder);
