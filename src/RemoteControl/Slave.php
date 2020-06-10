@@ -14,14 +14,14 @@ use GoIP\GoipClient;
 class Slave
 {
     /**
-     * @var string
+     * @var Server
      */
-    private $name;
+    private $server;
 
     /**
      * @var string
      */
-    private $address;
+    private $name;
 
     /**
      * @var int
@@ -42,7 +42,6 @@ class Slave
         }
         return (new self())
             ->setName(trim((string) $state->td[0]))
-            ->setAddress($urlMatches[1])
             ->setPort($urlMatches[2]);
     }
 
@@ -57,20 +56,18 @@ class Slave
     public function createClient(string $username = '', string $password = ''): GoipClient
     {
         return new GoipClient(
-            $this->address,
+            $this->server->getAddress(),
             $username,
             $password,
             $this->port
         );
     }
 
-    
     public function getName(): string
     {
         return $this->name;
     }
 
-    
     public function setName(string $name): Slave
     {
         $this->name = $name;
@@ -78,25 +75,23 @@ class Slave
     }
 
     
-    public function getAddress(): string
+    public function getServer(): Server
     {
-        return $this->address;
+        return $this->server;
     }
 
     
-    public function setAddress(string $address): Slave
+    public function setServer(Server $server): Slave
     {
-        $this->address = $address;
+        $this->server = $server;
         return $this;
     }
 
-    
     public function getPort(): int
     {
         return $this->port;
     }
 
-    
     public function setPort(int $port): Slave
     {
         $this->port = $port;

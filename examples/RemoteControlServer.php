@@ -13,3 +13,6 @@ $server = new \GoIP\RemoteControl\Server(
 // Get the list of slaves connected to the remote control server.
 $slaves = $server->findSlaves();
 dump($slaves);
+
+$slave = $server->findSlaveByName('VE1');
+dump($slave);

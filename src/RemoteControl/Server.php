@@ -47,7 +47,22 @@ class Server
      */
     public function findSlaves(): array
     {
-        return $this->getSlaveStates($this->requestPage());
+        return $this->getSlaves($this->requestPage());
+    }
+
+    public function findSlave(string $name): ?Slave
+    {
+        return $this->getSlave($this->requestPage(), $name);
+    }
+
+    public function findSlaveByName(string $name): ?Slave
+    {
+        return $this->getSlave($this->requestPage(), $name);
+    }
+
+    public function findSlaveByIpAddress(string $ipAddress): ?Slave
+    {
+        return $this->getSlave($this->requestPage(), $ipAddress, 1);
     }
 
     /**
@@ -55,7 +70,7 @@ class Server
      *
      * @return array Returns the list of slave objects accordingly to the server.
      */
-    private function getSlaveStates(string $serverResponse): array
+    private function getSlaves(string $serverResponse): array
     {
         $states = [];
         $responseReader = new \SimpleXMLElement($serverResponse);
@@ -67,6 +82,22 @@ class Server
         return $states;
     }
 
+    private function getSlave(string $serverResponse, string $searchValue, int $tdKey = 0, ?string $attribute = null): ?Slave
+    {
+        $responseReader = new \SimpleXMLElement($serverResponse);
+        $slaveStates = $responseReader->xpath('/html/body/center/table/tr');
+        foreach ($slaveStates as $state) {
+            $matchingValue = (null !== $attribute)
+                ? (string) $state->td[$tdKey]->a[$attribute]
+                : (string) $state->td[$tdKey];
+            if ($matchingValue !== $searchValue) {
+                continue;
+            }
+            return $this->mapStateToSlave($state);
+        }
+        return null;
+    }
+
     /**
      * Transforms one {@link \SimpleXMLElement} state into {@link Slave}.
      *
@@ -76,7 +107,7 @@ class Server
      */
     private function mapStateToSlave(\SimpleXMLElement $state): Slave
     {
-        return Slave::fromState($state);
+        return Slave::fromState($state)->setServer($this);
     }
 
     /**
