@@ -15,6 +15,12 @@ $server = new \GoIP\RemoteControl\Server(
 $slaves = $server->findSlaves();
 dump($slaves);
 
-// Get the first registered slave by findBySlaveByName method.
-$slave = $server->findSlaveByName($slaves[0]->getName());
+// Get a slave sing findSlaveByName method
+$slave = $server->findSlaveByName($_ENV['SLAVE_NAME']);
 dump($slave);
+
+// Get the SMS in inbox from the default line.
+$slaveClient = $slave->createClient($_ENV['GOIP_CLIENT_USERNAME'], $_ENV['GOIP_CLIENT_PASSWORD']);
+$slaveSms = new \GoIP\Sms($slaveClient);
+$messages = $slaveSms->getLineMessages(intval($_ENV['GOIP_CLIENT_DEFAULT_LINE']));
+dump($messages);
