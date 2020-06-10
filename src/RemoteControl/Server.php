@@ -32,8 +32,12 @@ class Server
      */
     private $password;
 
-    public function __construct(string $address, ?int $port = self::DEFAULT_WEB_PORT, ?string $username = null, ?string $password = null)
-    {
+    public function __construct(
+        string $address,
+        ?int $port = self::DEFAULT_WEB_PORT,
+        ?string $username = null,
+        ?string $password = null
+    ) {
         $this->address = $address;
         $this->port = $port;
         $this->username = $username;
@@ -50,16 +54,35 @@ class Server
         return $this->getSlaves($this->requestPage());
     }
 
+    /**
+     * Finds a slave by its name
+     *
+     * @param string $name Name of the slave.
+     *
+     * @return Slave|null Returns the {@link Slave} or null if it does not exist
+     */
     public function findSlave(string $name): ?Slave
     {
         return $this->getSlave($this->requestPage(), $name);
     }
 
+    /**
+     * Alias of {@link Server::findSlave()}.
+     *
+     * @param string $name Name of the slave.
+     */
     public function findSlaveByName(string $name): ?Slave
     {
         return $this->getSlave($this->requestPage(), $name);
     }
 
+    /**
+     * Finds a slave by it remote IP address.
+     *
+     * @param string $ipAddress Slave IP address.
+     *
+     * @return Slave|null Returns the first slave matching the IP address.
+     */
     public function findSlaveByIpAddress(string $ipAddress): ?Slave
     {
         return $this->getSlave($this->requestPage(), $ipAddress, 1);
@@ -82,14 +105,18 @@ class Server
         return $states;
     }
 
-    private function getSlave(string $serverResponse, string $searchValue, int $tdKey = 0, ?string $attribute = null): ?Slave
-    {
+    private function getSlave(
+        string $serverResponse,
+        string $searchValue,
+        int $tdKey = 0,
+        ?string $attribute = null
+    ): ?Slave {
         $responseReader = new \SimpleXMLElement($serverResponse);
         $slaveStates = $responseReader->xpath('/html/body/center/table/tr');
         foreach ($slaveStates as $state) {
             $matchingValue = (null !== $attribute)
-                ? (string) $state->td[$tdKey]->a[$attribute]
-                : (string) $state->td[$tdKey];
+                ? trim((string) $state->td[$tdKey]->a[$attribute])
+                : trim((string) $state->td[$tdKey]);
             if ($matchingValue !== $searchValue) {
                 continue;
             }
