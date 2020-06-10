@@ -3,7 +3,14 @@
 /*.iml
 # Ignore vendor
 /vendor/
+# Ignore environment-specific files
+/.env
+/.env.test
 # Ignore PHP-CS cache
 /.php_cs.cache
-# Ignore PHP-FpM related errors
+# Ignore Composer lock file in order to get the latest packages.
+# NOTE: Use it only in library-like projects!
+# See https://getcomposer.org/doc/02-libraries.md#lock-file for more information
+/composer.lock
+# Ignore PHP-FPM related errors
 error_log

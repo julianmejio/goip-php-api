@@ -15,6 +15,7 @@ namespace GoIP;
  * Base Class
  *
  * @package  GoIP
+ *
  * @author   April Sacil <aprilvsacil@gmail.com>
  * @standard PSR-2
  */
@@ -37,7 +38,7 @@ class Base
      * Does a curl in the GoIP GSM Modem
      *
      * @param string $route
-     * @param array $params
+     *
      * @return resource
      */
     public function connect($route, array $params = [], array $data = [])

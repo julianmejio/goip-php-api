@@ -15,6 +15,7 @@ namespace GoIP;
  * Client Class
  *
  * @package  GoIP
+ *
  * @author   April Sacil <aprilvsacil@gmail.com>
  * @standard PSR-2
  */
@@ -103,7 +104,8 @@ class GoipClient
      * Set host.
      *
      * @param   string
-     * @return  $this
+     *
+     * @return $this
      */
     public function setHost($host)
     {
@@ -117,7 +119,8 @@ class GoipClient
      * Set port.
      *
      * @param   int
-     * @return  $this
+     *
+     * @return $this
      */
     public function setPort($port = 80)
     {
@@ -131,7 +134,8 @@ class GoipClient
      * Set password.
      *
      * @param   string
-     * @return  $this
+     *
+     * @return $this
      */
     public function setPassword($password)
     {
@@ -145,7 +149,8 @@ class GoipClient
      * Set username.
      *
      * @param   string
-     * @return  $this
+     *
+     * @return $this
      */
     public function setUsername($username)
     {
@@ -159,7 +164,8 @@ class GoipClient
      * Set send id.
      *
      * @param   int
-     * @return  $this
+     *
+     * @return $this
      */
     public function setId($id)
     {
@@ -173,7 +179,8 @@ class GoipClient
      * Set debugging.
      *
      * @param   bool
-     * @return  $this
+     *
+     * @return $this
      */
     public function setDebug($debug = false)
     {

@@ -15,6 +15,7 @@ namespace GoIP;
  * Base Class
  *
  * @package  GoIP
+ *
  * @author   April Sacil <aprilvsacil@gmail.com>
  * @standard PSR-2
  */
@@ -78,6 +79,7 @@ class Sms extends Base
      * Pulls Specific Line in GoIp Modem Messages
      *
      * @param int $line
+     *
      * @return array
      */
     public function getLineMessages($line)
@@ -89,9 +91,9 @@ class Sms extends Base
     /**
      * Send Sms
      *
-     * @param int $line
-     * @param mixed $receiver
+     * @param int    $line
      * @param string $message
+     *
      * @return array
      */
     public function sendSms($line, $receiver, $message)
@@ -120,10 +122,10 @@ class Sms extends Base
     /**
      * Send Bulk Sms
      *
-     * @param int $line
-     * @param array $receivers
+     * @param int    $line
      * @param string $message
-     * @return array
+     *
+     * @return Sms
      */
     public function sendBulkSms($line, array $receivers, $message)
     {
@@ -138,7 +140,7 @@ class Sms extends Base
      * Get Sms Send Status
      *
      * @param int $line
-     * @param mixed $key
+     *
      * @return array
      */
     public function getSmsSendStatus($line, $key)
