@@ -47,7 +47,7 @@ class Sms extends Base
             ["type" => "sms_inbox"]
         );
 
-        preg_match_all('/sms\=\s(.*\]);/', $result, $lines);
+        preg_match_all('/sms=\s(.*]);/', $result, $lines);
         foreach ($lines[1] as $i => $dataRaw) {
             $line = $i + 1;
             $messages[$line] = [];
