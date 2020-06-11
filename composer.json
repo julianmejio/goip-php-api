@@ -14,15 +14,25 @@
         "ext-simplexml": "*",
         "ext-json": "*",
         "ext-curl": "*",
-        "ext-libxml": "*"
+        "ext-libxml": "*",
+        "ext-iconv": "*",
+        "ext-dom": "*"
     },
     "autoload": {
         "psr-4": { "GoIP\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\GoIP\\": "tests/"
+        }
     },
     "require-dev": {
         "phpunit/phpunit": "^9.2",
         "friendsofphp/php-cs-fixer": "^2.16",
         "symfony/var-dumper": "^5.1",
         "symfony/dotenv": "^5.1"
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit"
     }
 }

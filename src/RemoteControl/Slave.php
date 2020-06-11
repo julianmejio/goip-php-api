@@ -1,13 +1,11 @@
 <?php
 
-
 namespace GoIP\RemoteControl;
 
 use GoIP\GoipClient;
 
 /**
  * A GoIP device connected to a remote control server.
- * Class Slave
  *
  * @package GoIP\RemoteControl
  */
@@ -29,6 +27,11 @@ class Slave
     private $port;
 
     /**
+     * @var string
+     */
+    private $exposedIpAddress;
+
+    /**
      * Creates a {@link Slave} from its state.
      *
      * @param \SimpleXMLElement $state State retrieved from the server response.
@@ -42,6 +45,7 @@ class Slave
         }
         return (new self())
             ->setName(trim((string) $state->td[0]))
+            ->setExposedIpAddress(trim((string) $state->td[1]))
             ->setPort($urlMatches[2]);
     }
 
@@ -74,13 +78,11 @@ class Slave
         return $this;
     }
 
-    
     public function getServer(): Server
     {
         return $this->server;
     }
 
-    
     public function setServer(Server $server): Slave
     {
         $this->server = $server;
@@ -95,6 +97,17 @@ class Slave
     public function setPort(int $port): Slave
     {
         $this->port = $port;
+        return $this;
+    }
+
+    public function getExposedIpAddress(): string
+    {
+        return $this->exposedIpAddress;
+    }
+
+    public function setExposedIpAddress(string $exposedIpAddress): Slave
+    {
+        $this->exposedIpAddress = $exposedIpAddress;
         return $this;
     }
 }

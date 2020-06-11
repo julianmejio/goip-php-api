@@ -1,6 +1,5 @@
 <?php
 
-
 namespace GoIP\RemoteControl;
 
 /**
@@ -47,7 +46,7 @@ class Server
     /**
      * Get all the slaves that are connected to the remote control server.
      *
-     * @return array Returns an array with the slaves registered in the server.
+     * @return Slave[] Returns an array with the slaves registered in the server.
      */
     public function findSlaves(): array
     {
@@ -105,6 +104,17 @@ class Server
         return $states;
     }
 
+    /**
+     * Get a {@link Slave} instance by any searchable value.
+     *
+     * @param string      $serverResponse Server slave data
+     * @param string      $searchValue    Value to compare with the slaves.
+     * @param int         $tdKey          ID of the <td> element where to search in
+     * @param string|null $attribute      Name of the attribute to search in
+     *
+     * @return Slave|null Returns the instance of the slave, or null if it is
+     *                    not found.
+     */
     private function getSlave(
         string $serverResponse,
         string $searchValue,
@@ -179,46 +189,39 @@ class Server
         return $responseDom->saveHTML();
     }
 
-    
     public function getAddress(): string
     {
         return $this->address;
     }
 
-    
     public function setAddress(string $address): Server
     {
         $this->address = $address;
         return $this;
     }
 
-    
     public function getPort(): ?int
     {
         return $this->port;
     }
 
-    
     public function setPort(?int $port): Server
     {
         $this->port = $port;
         return $this;
     }
 
-    
     public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    
     public function setUsername(?string $username): Server
     {
         $this->username = $username;
         return $this;
     }
 
-    
     public function setPassword(?string $password): Server
     {
         $this->password = $password;
