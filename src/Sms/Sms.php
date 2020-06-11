@@ -2,6 +2,11 @@
 
 namespace GoIP\Sms;
 
+/**
+ * SMS model.
+ *
+ * @package GoIP\Sms
+ */
 class Sms
 {
     /**

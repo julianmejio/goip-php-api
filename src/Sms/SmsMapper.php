@@ -2,6 +2,12 @@
 
 namespace GoIP\Sms;
 
+/**
+ * SMS mapper.
+ * It offers a compatible conversion from {@link \GoIP\Sms} to {@link Sms}
+ *
+ * @package GoIP\Sms
+ */
 class SmsMapper
 {
     /**

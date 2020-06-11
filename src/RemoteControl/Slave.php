@@ -6,7 +6,6 @@ use GoIP\GoipClient;
 
 /**
  * A GoIP device connected to a remote control server.
- * Class Slave
  *
  * @package GoIP\RemoteControl
  */

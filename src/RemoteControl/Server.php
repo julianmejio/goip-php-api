@@ -104,6 +104,17 @@ class Server
         return $states;
     }
 
+    /**
+     * Get a {@link Slave} instance by any searchable value.
+     *
+     * @param string      $serverResponse Server slave data
+     * @param string      $searchValue    Value to compare with the slaves.
+     * @param int         $tdKey          ID of the <td> element where to search in
+     * @param string|null $attribute      Name of the attribute to search in
+     *
+     * @return Slave|null Returns the instance of the slave, or null if it is
+     *                    not found.
+     */
     private function getSlave(
         string $serverResponse,
         string $searchValue,
