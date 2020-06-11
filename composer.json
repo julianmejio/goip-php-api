@@ -21,6 +21,11 @@
     "autoload": {
         "psr-4": { "GoIP\\": "src/" }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\GoIP\\": "tests/"
+        }
+    },
     "require-dev": {
         "phpunit/phpunit": "^9.2",
         "friendsofphp/php-cs-fixer": "^2.16",

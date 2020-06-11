@@ -46,7 +46,7 @@ class Server
     /**
      * Get all the slaves that are connected to the remote control server.
      *
-     * @return array Returns an array with the slaves registered in the server.
+     * @return Slave[] Returns an array with the slaves registered in the server.
      */
     public function findSlaves(): array
     {
