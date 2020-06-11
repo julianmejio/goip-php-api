@@ -30,4 +30,16 @@ class SmsAdapter
     {
         return $this->client->getMessages();
     }
+
+    /**
+     * Find all the messages of a line slot.
+     *
+     * @param int $line Line slot number.
+     *
+     * @return array Returns the array-like messages form the line slot.
+     */
+    public function findByLine(int $line): array
+    {
+        return $this->client->getLineMessages($line);
+    }
 }
