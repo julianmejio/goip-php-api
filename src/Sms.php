@@ -65,7 +65,7 @@ class Sms extends Base
 
                 list($date, $sender, $text) = explode(',', $message, 3);
                 $messages[$line][] = [
-                    'date'      => $date,
+                    'date'      => date('Y') . '-' . $date,
                     'sender'    => $sender,
                     'text'      => $text,
                 ];
