@@ -15,7 +15,8 @@
         "ext-json": "*",
         "ext-curl": "*",
         "ext-libxml": "*",
-        "ext-iconv": "*"
+        "ext-iconv": "*",
+        "ext-dom": "*"
     },
     "autoload": {
         "psr-4": { "GoIP\\": "src/" }
