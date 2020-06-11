@@ -1,6 +1,5 @@
 <?php
 
-
 namespace GoIP\RemoteControl;
 
 /**
@@ -179,46 +178,39 @@ class Server
         return $responseDom->saveHTML();
     }
 
-    
     public function getAddress(): string
     {
         return $this->address;
     }
 
-    
     public function setAddress(string $address): Server
     {
         $this->address = $address;
         return $this;
     }
 
-    
     public function getPort(): ?int
     {
         return $this->port;
     }
 
-    
     public function setPort(?int $port): Server
     {
         $this->port = $port;
         return $this;
     }
 
-    
     public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    
     public function setUsername(?string $username): Server
     {
         $this->username = $username;
         return $this;
     }
 
-    
     public function setPassword(?string $password): Server
     {
         $this->password = $password;

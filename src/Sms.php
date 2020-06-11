@@ -1,4 +1,6 @@
-<?php // -->
+<?php
+
+// -->
 /**
  * GoIP Client/Server Package based on
  * GoIP SMS Gateway Interface.

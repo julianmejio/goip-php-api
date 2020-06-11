@@ -1,6 +1,5 @@
 <?php
 
-
 namespace GoIP\Sms;
 
 use GoIP\Sms;
@@ -17,7 +16,6 @@ class SmsAdapter
         $this->client  = $client;
     }
 
-    
     public function findAll(): array
     {
         return $this->client->getMessages();

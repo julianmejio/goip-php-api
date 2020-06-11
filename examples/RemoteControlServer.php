@@ -1,6 +1,5 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
+
 require_once(__DIR__ . '/bootstrap.php');
 
 $server = new \GoIP\RemoteControl\Server(
@@ -19,8 +18,17 @@ dump($slaves);
 $slave = $server->findSlaveByName($_ENV['SLAVE_NAME']);
 dump($slave);
 
-// Get the SMS in inbox from the default line.
+// Let's do an elaborated SMS query
+
+// Create a client for the default slave
 $slaveClient = $slave->createClient($_ENV['GOIP_CLIENT_USERNAME'], $_ENV['GOIP_CLIENT_PASSWORD']);
+// Create a base SMS with the client
 $slaveSms = new \GoIP\Sms($slaveClient);
-$messages = $slaveSms->getLineMessages(intval($_ENV['GOIP_CLIENT_DEFAULT_LINE']));
+// Create an adapter
+$smsAdapter = new \GoIP\Sms\SmsAdapter($slaveSms);
+// Create a SMS mapper
+$mapper = new \GoIP\Sms\SmsMapper($smsAdapter);
+// Get all the SMS
+$messages = $mapper->findAll();
+// And dump it
 dump($messages);

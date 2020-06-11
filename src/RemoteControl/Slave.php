@@ -1,6 +1,5 @@
 <?php
 
-
 namespace GoIP\RemoteControl;
 
 use GoIP\GoipClient;
@@ -74,13 +73,11 @@ class Slave
         return $this;
     }
 
-    
     public function getServer(): Server
     {
         return $this->server;
     }
 
-    
     public function setServer(Server $server): Slave
     {
         $this->server = $server;

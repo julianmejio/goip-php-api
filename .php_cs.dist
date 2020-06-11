@@ -16,5 +16,6 @@ return PhpCsFixer\Config::create()
         'phpdoc_separation' => true,
         'no_superfluous_phpdoc_tags' => true,
         'no_empty_phpdoc' => true,
+        'no_extra_blank_lines' => true,
     ])
     ->setFinder($finder);

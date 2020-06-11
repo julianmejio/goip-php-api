@@ -1,6 +1,5 @@
 <?php
 
-
 namespace GoIP\Sms;
 
 class SmsMapper
@@ -19,14 +18,19 @@ class SmsMapper
      * Get all the SMS from all the lines
      *
      * @return array Returns the list of SMS found in all the lines.
+     *
+     * @throws \Exception
      */
     public function findAll(): array
     {
         $messagesStates = $this->adapter->findAll();
         $smsList = [];
-        foreach ($messagesStates as $state) {
-            $smsList[] = $this->mapStateToSms($state);
+        foreach ($messagesStates as $lineNumber => $smsStates) {
+            foreach ($smsStates as $smsState) {
+                $smsList[] = ($this->mapStateToSms($smsState))->setLine($lineNumber);
+            }
         }
+        return $smsList;
     }
 
     /**
