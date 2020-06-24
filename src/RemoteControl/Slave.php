@@ -3,6 +3,8 @@
 namespace GoIP\RemoteControl;
 
 use GoIP\GoipClient;
+use GoIP\Sms;
+use GoIP\Sms\SmsGateway;
 
 /**
  * A GoIP device connected to a remote control server.
@@ -65,6 +67,19 @@ class Slave
             $password,
             $this->port
         );
+    }
+
+    /**
+     * Creates an SMS gateway for sending and receiving SMS.
+     *
+     * @param string $username GoIP Username.
+     * @param string $password GoIP password.
+     *
+     * @return SmsGateway Returns the created SMS gateway.
+     */
+    public function getSmsGateway(string $username = '', string $password = ''): SmsGateway
+    {
+        return new SmsGateway(new Sms($this->createClient($username, $password)));
     }
 
     public function getName(): string
