@@ -35,7 +35,8 @@ Add the repository manually and require the dependency in *composer.json*.
 * The method `\GoIP\Sms\SmsGateway::sendSmsAndWaitResponse()` only can handle
   one response per line simultaneously. If two o more SMS are sent through the
   line at the same time, it will break the response functionality due race
-  conditions.
+  conditions. It is blocked using locks to allow only one send-and-response
+  call per line simultaneously, but it requires a working Memcached server.
 
 ## Next features
 

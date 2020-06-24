@@ -2,8 +2,11 @@
 
 namespace GoIP\Sms;
 
+use GoIP\Exception\MissingSmsResponseException;
 use GoIP\Exception\SmsNotSentException;
 use GoIP\Exception\SmsResponseTimeoutException;
+use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\Store\MemcachedStore;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
@@ -17,10 +20,16 @@ class SmsGateway
      * Time in seconds to check the response for a sent SMS.
      */
     const CHECK_RESPONSE_INTERVAL = 1;
+
     /**
      * @var \GoIP\Sms
      */
     private $sms;
+
+    /**
+     * @var MemcachedStore
+     */
+    private $lockStore;
 
     public function __construct(\GoIP\Sms $sms)
     {
@@ -74,28 +83,63 @@ class SmsGateway
      */
     public function sendSmsAndWaitResponse(string $addressee, string $message, int $line = 1, int $responseTimeout = 60): Sms
     {
-        $sendResult = $this->sendSms($addressee, $message, $line);
+        $lock = null;
+        if (null !== $this->lockStore) {
+            $lockFactory = new Factory($this->lockStore);
+            $lock = $lockFactory->createLock('goip-sms-send-receive-' . $line, $responseTimeout);
 
-        if (!$sendResult) {
-            throw new SmsNotSentException($line, $addressee);
+            if (!$lock->acquire()) {
+                throw new \Exception('There is another wait-for-response SMS in progress');
+            }
         }
 
-        $mapper = new SmsMapper(new SmsAdapter($this->sms));
-        /** @var Sms $latestMessage */
-        $latestMessage = ($mapper->findByLine($line))[0];
-        $stopwatch = new Stopwatch();
-        $stopwatch->start('check_response');
-        do {
-            sleep(self::CHECK_RESPONSE_INTERVAL);
-            /** @var Sms $responseCheckMessage */
-            $responseCheckMessage = ($mapper->findByLine($line))[0];
-            if ($responseCheckMessage->getDate()->format('Y-m-d H:i:s') === $latestMessage->getDate()->format('Y-m-d H:i:s')) {
-                continue;
-            }
-            $stopwatch->stop('check_response');
-            return $responseCheckMessage;
-        } while ($stopwatch->lap('check_response')->getDuration() > $responseTimeout);
+        try {
+            $sendResult = $this->sendSms($addressee, $message, $line);
 
-        throw new SmsResponseTimeoutException($line);
+            if (!$sendResult) {
+                throw new SmsNotSentException($line, $addressee);
+            }
+
+            $mapper = new SmsMapper(new SmsAdapter($this->sms));
+            /** @var Sms $latestMessage */
+            $latestMessage = ($mapper->findByLine($line))[0];
+            $stopwatch = new Stopwatch();
+            $stopwatch->start('check_response');
+            do {
+                sleep(self::CHECK_RESPONSE_INTERVAL);
+                /** @var Sms $responseCheckMessage */
+                $responseCheckMessage = ($mapper->findByLine($line))[0];
+                if ($responseCheckMessage->getDate()->format('Y-m-d H:i:s') === $latestMessage->getDate()->format('Y-m-d H:i:s')) {
+                    continue;
+                }
+                $stopwatch->stop('check_response');
+                if (null !== $lock) {
+                    $lock->release();
+                }
+                return $responseCheckMessage;
+            } while ($stopwatch->lap('check_response')->getDuration() > $responseTimeout);
+
+            if (null !== $lock) {
+                $lock->release();
+            }
+
+            throw new SmsResponseTimeoutException($line);
+        } catch (\Throwable $th) {
+            if (null !== $lock) {
+                $lock->release();
+            }
+            throw new MissingSmsResponseException('Could not retrieve the SMS response. ' . $th->getMessage());
+        }
+    }
+
+    public function getLockStore(): MemcachedStore
+    {
+        return $this->lockStore;
+    }
+
+    public function setLockStore(MemcachedStore $lockStore): SmsGateway
+    {
+        $this->lockStore = $lockStore;
+        return $this;
     }
 }
