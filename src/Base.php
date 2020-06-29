@@ -23,17 +23,34 @@ namespace GoIP;
  */
 class Base
 {
+    const DEFAULT_CONNECT_TIMEOUT = 5000;
+    const DEFAULT_TIMEOUT = 60000;
+
+    /**
+     * @var int
+     */
+    private $connectTimeout;
+
+    /**
+     * @var int
+     */
+    private $timeout;
+
     public $goip;
 
     /**
      * Initialize the client connection
      * given the host, port, username and password
      *
-     * @param GoIp|null $goip
      */
-    public function __construct(GoipClient $goip)
-    {
+    public function __construct(
+        GoipClient $goip,
+        int $connectTimeout = self::DEFAULT_CONNECT_TIMEOUT,
+        int $timeout = self::DEFAULT_TIMEOUT
+    ) {
         $this->goip = $goip;
+        $this->connectTimeout = $connectTimeout;
+        $this->timeout = $timeout;
     }
 
     /**
@@ -48,23 +65,53 @@ class Base
         $url  = "http://" . $this->goip->host . '/default/en_US';
         $url .= $route . '?' . http_build_query($params);
         $user = $this->goip->username . ":" . $this->goip->password;
-        $curl = curl_init();
+        $curl = curl_init($url);
 
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_USERPWD, $user);
-        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($curl, CURLOPT_PORT, $this->goip->port);
+        curl_setopt_array(
+            $curl,
+            [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_USERPWD => $user,
+                CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+                CURLOPT_PORT => $this->goip->port,
+                CURLOPT_CONNECTTIMEOUT_MS => $this->connectTimeout,
+                CURLOPT_TIMEOUT_MS => $this->timeout,
+            ]
+        );
 
         if ($data) {
-            curl_setopt($curl, CURLOPT_POST, count($data));
-            curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+            curl_setopt_array($curl, [
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => http_build_query($data),
+                CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded'],
+            ]);
         }
 
         $results = curl_exec($curl);
         curl_close($curl);
         
         return $results;
+    }
+
+    public function getConnectTimeout(): int
+    {
+        return $this->connectTimeout;
+    }
+
+    public function setConnectTimeout(int $connectTimeout): Base
+    {
+        $this->connectTimeout = $connectTimeout;
+        return $this;
+    }
+
+    public function getTimeout(): int
+    {
+        return $this->timeout;
+    }
+
+    public function setTimeout(int $timeout): Base
+    {
+        $this->timeout = $timeout;
+        return $this;
     }
 }
