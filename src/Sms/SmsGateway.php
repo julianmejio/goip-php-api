@@ -20,6 +20,8 @@ class SmsGateway
      * Time in seconds to check the response for a sent SMS.
      */
     const CHECK_RESPONSE_INTERVAL = 1;
+    const DEFAULT_CONNECT_TIMEOUT = 5000;
+    const DEFAULT_TIMEOUT = 60000;
 
     /**
      * @var \GoIP\Sms
@@ -31,9 +33,14 @@ class SmsGateway
      */
     private $lockStore;
 
-    public function __construct(\GoIP\Sms $sms)
-    {
+    public function __construct(
+        \GoIP\Sms $sms,
+        int $connectTimeout = self::DEFAULT_CONNECT_TIMEOUT,
+        int $timeout = self::DEFAULT_TIMEOUT
+    ) {
         $this->sms = $sms;
+        $this->sms->setConnectTimeout($connectTimeout);
+        $this->sms->setTimeout($timeout);
     }
 
     /**
@@ -81,7 +88,7 @@ class SmsGateway
      * @throws \Exception Thrown when the initial SMS is not sent or when first
      *                    occurs the timeout before receiving the response.
      */
-    public function sendSmsAndWaitResponse(string $addressee, string $message, int $line = 1, int $responseTimeout = 60): Sms
+    public function sendSmsAndWaitResponse(string $addressee, string $message, int $line = 1, int $responseTimeout = self::DEFAULT_TIMEOUT): Sms
     {
         $lock = null;
         if (null !== $this->lockStore) {
@@ -117,7 +124,7 @@ class SmsGateway
                     $lock->release();
                 }
                 return $responseCheckMessage;
-            } while ($stopwatch->lap('check_response')->getDuration() > $responseTimeout);
+            } while ($stopwatch->lap('check_response')->getDuration() <= $responseTimeout);
 
             if (null !== $lock) {
                 $lock->release();
@@ -128,7 +135,7 @@ class SmsGateway
             if (null !== $lock) {
                 $lock->release();
             }
-            throw new MissingSmsResponseException('Could not retrieve the SMS response. ' . $th->getMessage());
+            throw new MissingSmsResponseException('Could not retrieve the SMS response. ' . $th->getMessage(), $th->getCode(), $th);
         }
     }
 
@@ -140,6 +147,18 @@ class SmsGateway
     public function setLockStore(MemcachedStore $lockStore): SmsGateway
     {
         $this->lockStore = $lockStore;
+        return $this;
+    }
+
+    public function setConnectTimeout(int $connectTimeout): SmsGateway
+    {
+        $this->sms->setConnectTimeout($connectTimeout);
+        return $this;
+    }
+
+    public function setTimeout(int $timeout): SmsGateway
+    {
+        $this->sms->setTimeout($timeout);
         return $this;
     }
 }
